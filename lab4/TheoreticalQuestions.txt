@@ -1,0 +1,66 @@
+Theoretical Questions for Lab 4
+
+
+========================================
+8
+
+    a) To prevent hackers getting access to the database we could implement input varification on the client
+    side to prevent SQL-injections. We should then use some form of encryption to store the credit card information
+
+    
+    b) It is good to have code seperation between the client/server and the database. This is bacuase it makes usability, 
+    performance and scalability better. 
+   
+
+========================================
+9  
+
+    b) No, it isn't visible in session B since we haven't commited the changes in session A. However if we commit in session A 
+    the reservation becomes visible in session B
+    
+    c) When trying to modify the reservation from A in B, the session B waits for session A to commit before being able to alter
+    anything from session A's Table. This is because START TRANSACTION locks the parts of the table it is interacting with, so no other 
+    sessions can alter those parts to prevent race conditions.
+    
+========================================
+10
+
+    a) When trying to execute the script at the same time we get the message in the second session that "there are no seats available
+    on the chosen flight" while the first session makes a reservation of 21 people so the second session gets 19 as the answer to how 
+    many seats are avaliable.
+    
+    b) In theory, a overbooking can occur if the code runs at the almost exactly same time and at the same speed. If both session tries 
+    to make a payment and the addPayment procedure calls the calculateFreeSeats function on line 280 it could happen. More specifically
+    if the first session passes line 176 and the second passes line 176 before the firstone reaches line 178 or 180 (i.e before the first
+    session returns) we could get overbooking. This is however highly unlikely.
+    
+    c) This could be done using the Sleep(5) tool if we use it in the critical section of our code, however this is highly unlikely to 
+    happen in real life since we have a window of three lines to execute simultanously. 
+    
+    d) By adding START TRANSACTION and locking relevant sections of the tables affected before trying to add reservation/passsengers we 
+    make sure that annother session cant access them during the first sessions booking. After this is done we COMMIT and unlock the tables 
+    so they get updated for other sessions to use.
+    
+========================================
+
+Identify one case where a secondary index would be useful. Design the index,
+describe and motivate your design. 
+
+
+If, for example, we want to query passengers based on name on the future it might be a good idea to use secondary index to make the process
+faster since there are probably many people in this table.
+
+CREATE TABLE Passenger (
+       passport_number INT NOT NULL,
+       reservation_number INT,
+       name VARCHAR(30),
+       CONSTRAINT pk_passenger PRIMARY KEY(passport_number, reservation_number));
+       
+CREATE INDEX pas_name on Passenger(name);
+
+Using this we can query on the name much more efficiently.
+
+
+
+
+

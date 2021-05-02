@@ -1,0 +1,151 @@
+CREATE TABLE Weekly_schedule (
+       id INT AUTO INCREMENT,
+       route INT NOT NULL,
+       day varchar(10),
+       year INT,
+       ToD TIME,
+       CONSTRAINT pk_ws PRIMARY KEY(id));
+
+CREATE TABLE Year (
+       year INT NOT NULL,
+       profit_factor double,
+       CONSTRAINT pk_year PRIMARY KEY(year));
+
+CREATE TABLE Weekday (
+       wd VARCHAR(10) NOT NULL,
+       weekday_factor double,
+       CONSTRAINT pk_day PRIMARY KEY(wd));
+
+CREATE TABLE Route (
+       id INT AUTO INCREMENT,
+       to INT,
+       from INT,
+       routeprice DOUBLE,
+       CONSTRAINT pk_route PRIMARY KEY(id));
+
+CREATE TABLE Airport (
+       airport_code VARCHAR(3) NOT NULL,
+       name VARCHAR(30),
+       city VARCHAR(30),
+       country VARCHAR(30),
+       CONSTRAINT pk_airport PRIMARY KEY(airport_code);
+
+CREATE TABLE Flight (
+       flight_number INT NOT NULL,
+       weekly_flight INT,
+       week INT,
+       CONSTRAINT pk_flight PRIMARY KEY(flight_number);
+
+CREATE TABLE Reservation (
+       reservation_number INT DEFAULT RAND(),
+       flight INT,
+       seats INT,
+       CONSTRAINT pk_reservation PRIMARY KEY(reservation_number);
+
+CREATE TABLE Booking (
+       reservation INT NOT NULL,
+       price INT,
+       paid_by INT,
+       contact INT,
+       CONSTRAINT pk_booking PRIMARY KEY(reservation);
+
+CREATE TABLE Payment (
+       id INT AUTO INCREMENT,
+       cardholder VARCHAR(40),
+       cardnumber BIGINT,
+       CONSTRAINT pk_payment PRIMARY KEY(id));
+
+CREATE TABLE Ticket (
+       ticket_number INT NOT NULL,
+       passenger INT,
+       flight INT,
+       CONSTRAINT pk_ticket PRIMARY KEY(ticket_number));
+
+CREATE TABLE passenger (
+       passport_number INT NOT NULL,
+       name VARCHAR(30),
+       reservation_number int,
+       CONSTRAINT pk_passenger PRIMARY KEY(passport_number));
+
+CREATE TABLE Contact (
+       passenger INT NOT NULL,
+       email VARCHAR(30),
+       phone_number BIGINT,
+       CONSTRAINT pk_contact PRIMARY KEY(passenger));
+
+ALTER TABLE Weekly_schedule ADD CONSTRAINT fk_ws_route FOREIGN KEY(route) REFERENCES Route(id);
+
+ALTER TABLE Weekly_schedule ADD CONSTRAINT fk_ws_day FOREIGN KEY(day) REFERENCES Weekday(wd);
+
+ALTER TABLE Weekly_schedule ADD CONSTRAINT fk_ws_year FOREIGN KEY(year) REFERENCES Year(year);
+
+ALTER TABLE Route ADD CONSTRAINT fk_route_to_airport FOREIGN KEY(to) REFERENCES Airport(airport_code);
+
+ALTER TABLE Route ADD CONSTRAINT fk_route_from_airport FOREIGN KEY(from) REFERENCES Airport(airport_code);
+
+ALTER TABLE Flight ADD CONSTRAINT fk_flight_ws FOREIGN KEY(weekly_flight) REFERENCES Weekly_schedule(id);
+
+ALTER TABLE Reservation ADD CONSTRAINT fk_reservation_flight FOREIGN KEY(flight) REFERENCES Flight(flight_number);
+
+ALTER TABLE Booking ADD CONSTRAINT fk_booking_reservation FOREIGN KEY(reservation) REFERENCES Reservation(reservation_number);
+
+ALTER TABLE Booking ADD CONSTRAINT fk_booking_payment FOREIGN KEY(paid_by) REFERENCES Payment(id);
+
+ALTER TABLE Booking ADD CONSTRAINT fk_booking_contact FOREIGN KEY(contact) REFERENCES Contact(passenger);
+
+ALTER TABLE Ticket ADD CONSTRAINT fk_ticket_flight FOREIGN KEY(flight) REFERENCES Flight(flight_number);
+
+ALTER TABLE Ticket ADD CONSTRAINT fk_ticket_passenger FOREIGN KEY(passenger) REFERENCES Passenger(passport_number);
+
+ALTER TABLE Passenger ADD CONSTRAINT fk_passenger_reservation FOREIGN KEY(reservation_number) REFERENCES Reservation(reservation_number);
+
+ALTER TABLE Contact ADD CONSTRAINT fk_contact_passenger FOREIGN KEY(passenger) REFERENCESS Passenger(passport_number);
+
+CREATE PROCEDURE addYear(IN year, IN factor)
+       begin
+       INSERT INTO Year VALUES(year, factor);
+       end;
+
+CREATE PROCEDURE addDay(IN year, IN day, IN factor)
+       begin
+       INSERT INTO Weekday VALUES(day, factor);
+       end;
+
+CREATE PROCEDURE addDestination(IN airport_code, IN name, IN country)
+       begin
+       INSERT INTO Airport VALUES(code, name, country);
+       end;
+
+CREATE PROCEDURE addRoute(IN departure_airport_code, IN arrival_airport_code, IN year, IN routeprice)
+       begin
+       INSERT INTO Route VALUES(arrival_airport_code, departure_airport_code, routeprice);
+       route_id = LAST_INSERT_ID();
+       INSERT INTO Weekly_schedule VALUES(route_id, ?????, year, ?????);
+       end;
+
+CREATE PROCEDURE addFlight(IN departure_airport_code, IN arrival_airport_code, IN year, IN day, IN departure_time)
+       begin
+       route_id = SELECT id FROM Route WHERE to = arrival_airport_code AND from = departure_airport_code;
+       INSERT INTO Weekly_schedule VALUES(route_id, day, year, departure_time);
+       end;
+
+CREATE FUNCTION calculateFreeSeats(flightnumber INT)
+       RETURNS INT DETERMINISTIC
+       reserved_seats = SELECT SUM(seats) FROM Reservations WHERE flight = flightnumber;
+       RETURN 40 - reserved_seats;
+
+CREATE FUNCTION calculatePrice(flightnumber INT)
+       RETURNS DOUBLE DETERMINISTIC
+       routeprice = SELECT routeprice FROM Route, Weekly_schedule WHERE Weekly_schedule.id = flightnumber AND Route.id = Weekly_schedule.route;
+       weekday_factor = SELECT weekday_factor FROM Weekday, Weekly_Schedule WHERE Weekly_schedule.id = flightnumber AND Weekday.wd = Weekly_schedule.day;
+       profit_factor = SELECT weekday_factor FROM Year, Weekly_Schedule WHERE Weekly_schedule.id = flightnumber AND Year.year = Weekly_schedule.year;
+       bookedPassengers = call calculateFreeSeats(flightnumber);
+
+       RETURN (routeprice*weekday_factor*(bookedPassengers + 1)/40*profit_factor);
+
+CREATE TRIGGER payment
+       AFTER INSERT ON Payment FOR EACH ROW
+       reservation = SELECT reservation.flight, reservation.passenger FROM Reservation, Booking, Payment, WHERE Booking.paid_by = NEW.paid_by AND Reservation.reservation_number = Booking.reservation GROUP BY passenger;
+       
+       
+

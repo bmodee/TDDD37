@@ -1,0 +1,22 @@
+UPDATE 1:
+- We fixed EER diagram and RM diagram
+
+- Fixed implementation in lab2.sql
+
+
+UPDATE 2:
+
+- EER-diagram: Fixed the relationship "ships" between entities Supplier and Supply ought to be 1:N rather than N:M
+
+- EER-diagram: Removed "id" attribute in manager
+
+- Relational Model: fixed readability a bit
+
+- Answer to question 
+	
+	3) "Do you have to initialize the bonus attribute to a value? Why?"
+		
+	We initialize bonus attribute to Zero because otherwise it would be a null
+    value which is bad since we can't add a bonus to a null value in the bonus
+    attribute later on.
+		

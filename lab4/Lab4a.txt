@@ -1,0 +1,97 @@
+------------------------------------------------------------
+
+Flight(FlightNumber, Week, WeeklyFlight)
+Candidate keys: (Week,WeeklyFlight)
+Primary key: FlightNumber
+Functional Dependencies: {FlightNumber -> (Week,WeeklyFlight) }
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+WeeklySchedule(Id, Route, Day, Year, ToD)
+Candidate keys: Id
+Primary key: Id
+Functional dependencies: {Id -> (Route, Day, Year, ToD)}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Year(Year, ProfitFactor)
+Candidate keys: Year
+Primary key: Year
+Functional Dependencies: {Year -> ProfitFactor}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Weekday(Weekday, WeekdayFactor)
+Candidate keys: Weekday
+Primary key: Weekday
+Functional dependencies: {Weekday -> WeekdayFactor}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Route(Id, Departure, Arrival)
+Candidate keys: Id, (Departure,Arrival)
+Primary key: Id
+Functional dependencies: {Id -> Departure,Arrival and Departure,Arrival -> Id}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Airport(AirportCode, Name, City, Country)
+Candidate keys: AirportCode, (Name, City, Country)
+Primary key: AirportCode
+Functional dependencies: {AirportCode -> Name,City,Country and (Name, City, Country) -> AirportCode}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Reservation(ReservationNumber, Contact, Flight)
+Candidate keys: ReservationNumber
+Primary key: ReservationNumber
+Functional dependencies: {ReservationNumber -> Contact,Flight}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Booking(Reservation, Price, Paidby)
+Candidate keys: Reservation
+Primary key: Reservation
+Functional dependencies: {Reservation -> Price, Paidby}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Payment(Id, Cardholder, Cardnumber)
+Candidate keys: Id, (Cardholder, Cardnumber)
+Primary key: Id
+Functional dependencies: {Id -> (Cardholder, Cardnumber) and (Cardholder, Cardnumber) -> Id}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Contact(Passenger, Email, PhoneNumber)
+Candidate keys: Passenger, (Email, PhoneNumber)
+Primary Key: Passenger
+Functional dependencies: {Passenger -> Email, PhoneNumber and Email, PhoneNumber -> Passenger}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Passenger(Id, Name, PassportNumber, ReservationNumber)
+Candidate keys: Id, PassportNumber, ReservationNumber
+Primary key: Id
+Functional dependencies: {Id -> (Name, PassportNumber, ReservationNumber)}
+Normal Form: BCNF
+
+------------------------------------------------------------
+
+Ticket(Passenger, Flight, TicketNumber)
+Candidate keys: TicketNumber
+Primary key: TicketNumber
+Functional Dependencies: {TicketNumber -> (Passenger, Flight)}
+Normal Form: BCNF
+
+------------------------------------------------------------

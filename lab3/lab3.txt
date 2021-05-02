@@ -1,0 +1,58 @@
+Answers for Lab3
+bjomo323
+carli625
+
+-----------------------------------------------
+1)
+  a) FD2: C -> AD / decomposition / C -> A
+     FD1: A -> BC / decomposition / A -> B
+     / transitivity / C -> B
+
+  b) FD1: A -> BC / decomposition / A -> C
+     FD2: C -> AD / decomposition / C -> D
+     / transitivity / A -> D
+     FD3: DE -> F
+
+-----------------------------------------------
+2)
+  a) X+ = {A}, A -> BC, B not in X+, C not in X+
+     X+ = {ABC}, C -> AD, A in X+, D not in X+
+     X+ = {ABCD}
+
+  b) X+ = {CE}, C -> AD, A not in X+, D not in X+
+     X+ = {ACDE}, A -> BC, B not in X+, C in X+
+     X+ = {ABCDE}, DE -> F, F not in X+
+     X+ = {ABCDEF}
+
+-----------------------------------------------
+3)
+  a) X+ = {AB}, AB -> CDEF, CDEF not in X+
+     X+ = {ABCDEF} => AB is candidate key
+
+     X+ = {E}, E -> F, F not in X+
+     X+ = {EF} => E is not candidate key
+
+     X+ = {D}, D -> B, B not in X+
+     X+ = {BD} => D is not candidate key
+
+     X+ = {AD}, D -> B, D not in X+
+     X+ = {ABD} => AD is candidate key because AB is already a known candidate key
+
+  b) FD2, FD3 since the X value in X -> Y is not a superkey
+
+  c) FD2, FD3 violates BCNF
+     (1) take FD2, decompose R to:
+     	 R1 = {ABCDE}, R2 = {EF}
+     (2) FD3 still violates BCNF
+     	 take FD3, decompose R1 to:
+	 R11 = {ACDE}, R12 = {DB}
+     Final decomposition: R2 = {EF}, R11 = {ACDE}, R12 = {DB}
+
+-----------------------------------------------
+4)
+  a) Both FD1 and FD2 have superkeys on the X value in X -> Y. Hence only FD3 violates BCNF.
+
+  b) FD3 violates BCNF
+     (1) take FD3, decompose R to:
+     	 R1 = {ABCE}, R2 = {CD}
+     Final decomposition: R1 = {ABCE}, R2 = {CD}
